@@ -8,7 +8,7 @@ const Post = () => {
       style={{ minHeight: "100vh" }}
     >
       <div className="col-md-3">
-        <h1 className="text-center mb-4">Post Page</h1>
+        <h1 className="text-center mb-4">Post New User</h1>
         <form>
           <div className="mb-3">
             <label htmlFor="firstName" className="form-label">
