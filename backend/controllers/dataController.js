@@ -1,44 +1,86 @@
-const data = {};
+const fs = require("fs").promises;
+const path = require("path");
 
-const getAllData = (req, res) => {
-  const sortedArray = Object.entries(data).map(([id, post]) => ({
-    id,
-    ...post,
-  }));
+const dataPath = path.join(__dirname, "..", "model", "data.json");
 
-  res.status(201).send(sortedArray);
+// const data = {};
+
+const getAllData = async (req, res) => {
+  try {
+    const data = await fs.readFile(dataPath, "utf-8");
+    const parsedData = JSON.parse(data);
+
+    const sortedArray = Object.entries(parsedData).map(([id, post]) => ({
+      id,
+      ...post,
+    }));
+
+    res.status(200).json(sortedArray);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching data" });
+  }
 };
 
-const postData = (req, res) => {
+const postData = async (req, res) => {
   const postId = new Date().toISOString();
   const newData = req.body;
 
-  data[postId] = newData;
+  try {
+    const data = await fs.readFile(dataPath, "utf-8");
+    let currentData = data ? JSON.parse(data) : {};
 
-  res.status(201).json(data);
+    currentData[postId] = newData;
+
+    const jsonData = JSON.stringify(currentData);
+
+    await fs.writeFile(dataPath, jsonData);
+
+    return res.status(201).json({ mesage: "New data added." });
+  } catch (err) {
+    return res.status(500).json({ message: "Error posting data." });
+  }
 };
 
-const editData = (req, res) => {
+const editData = async (req, res) => {
   const postId = req.params.postId;
   const newData = req.body;
 
-  if (data[postId]) {
-    data[postId] = newData;
-    res.status(200).json(data);
+  try {
+    const data = await fs.readFile(dataPath, "utf-8");
+    const parseData = JSON.parse(data);
+
+    if (parseData[postId]) {
+      parseData[postId] = newData;
+
+      await fs.writeFile(dataPath, JSON.stringify(parseData));
+      return res.status(200).json(parseData[postId]);
+    } else {
+      return res.status(404).json({ message: "No post found." });
+    }
+  } catch (err) {
+    console.error("Error:", err); // Loguj greške
+    res.status(500).json({ message: "No data found by specific ID." });
   }
-  console.log(post);
 };
 
-const deleteData = (req, res) => {
+const deleteData = async (req, res) => {
   const postId = req.params.postId;
 
-  if (data[postId]) {
-    delete data[postId];
-    res
-      .status(200)
-      .json({ message: `Post with ID ${postId} deleted successfully.` });
-  } else {
-    res.status(404).json({ message: `Post with ID ${postId} not found.` });
+  try {
+    const data = await fs.readFile(dataPath, "utf-8");
+    const parseData = JSON.parse(data);
+
+    if (parseData[postId]) {
+      delete parseData[postId];
+      await fs.writeFile(dataPath, JSON.stringify(parseData));
+      return res.status(201).json({ message: "Item sucesfully deleted." });
+    } else {
+      return res
+        .status(500)
+        .json({ message: "Cant delete item, please try again later" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Error while deleting file." });
   }
 };
 
