@@ -3,8 +3,6 @@ const path = require("path");
 
 const dataPath = path.join(__dirname, "..", "model", "data.json");
 
-// const data = {};
-
 const getAllData = async (req, res) => {
   try {
     const data = await fs.readFile(dataPath, "utf-8");
@@ -15,9 +13,26 @@ const getAllData = async (req, res) => {
       ...post,
     }));
 
-    res.status(200).json(sortedArray);
+    return res.status(200).json(sortedArray);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching data" });
+    return res.status(500).json({ message: "Error fetching data" });
+  }
+};
+
+const getSinglePost = async (req, res) => {
+  const postId = req.params.postId;
+
+  try {
+    const data = await fs.readFile(dataPath, "utf-8");
+    const parseData = JSON.parse(data);
+
+    if (!parseData[postId]) {
+      return res.status(500).json({ message: "No post found." });
+    }
+
+    return res.status(200).json(parseData[postId]);
+  } catch (err) {
+    return res.status(500).json({ message: "Error reading single post." });
   }
 };
 
@@ -86,6 +101,7 @@ const deleteData = async (req, res) => {
 
 module.exports = {
   getAllData,
+  getSinglePost,
   postData,
   editData,
   deleteData,
