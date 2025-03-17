@@ -1,22 +1,29 @@
+const dataRoutes = require("./routes/api/userData");
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
-const dataRoutes = require("./routes/api/userData");
-const registerRoute = require("./routes/userRegister");
-const loginUser = require("./routes/userAuth");
-const verifyJWT = require("./middleware/JWTverification");
+const registerUser = require("./routes/userRegister");
+const authUser = require("./routes/userLogin");
+const verificationJWT = require("./middleware/JWTverification");
+const refreshToken = require("./routes/refreshToken");
+const logoutUser = require("./routes/userLogout");
 
 const PORT = process.env.URI || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
-app.use("/register", registerRoute);
-app.use("/auth", loginUser);
+app.use(cookieParser());
 
-app.use(verifyJWT);
+app.use("/register", registerUser);
+app.use("/auth", authUser);
+app.use("/refresh", refreshToken);
+app.use("/logout", logoutUser);
+
+app.use(verificationJWT);
 app.use(dataRoutes);
 
 app.listen(PORT, () => {
