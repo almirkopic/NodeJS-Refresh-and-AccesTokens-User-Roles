@@ -14,30 +14,24 @@ const addNewUser = async (req, res) => {
   const { user, pw } = req.body;
 
   if (!user || !pw)
-    return res
-      .status(400)
-      .json({ message: "Username and password are required." });
+    return res.status(400).json("Username and password are required.");
 
-  const duplicate = usersDB.users.find((item) => item.username === user);
+  const duplicate = usersDB.users.find((client) => client.username === user);
 
   if (duplicate) {
-    return res.status(409).json({ message: "User already exist." });
+    return res.sendStatus(409);
   }
 
   try {
     const hashedPassword = await bcrypt.hash(pw, 12);
-
     const newUser = { username: user, password: hashedPassword };
 
     usersDB.setUsers([...usersDB.users, newUser]);
 
     await fsPromises.writeFile(dataPath, JSON.stringify(usersDB.users));
-
-    console.log(usersDB.users);
-
-    res.status(201).json({ sucess: "New user added." });
+    res.status(201).json({ message: "New user created." });
   } catch (err) {
-    return res.status(401).json({ message: err.message });
+    return res.status(500).json({ message: "Error creating new user." });
   }
 };
 
