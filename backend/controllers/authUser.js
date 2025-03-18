@@ -8,7 +8,7 @@ const usersDB = {
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const path = require("path");
-const fsPromises = require("fs").promises;
+const fsPromise = require("fs").promises;
 
 const dataPath = path.join(__dirname, "..", "model", "users.json");
 
@@ -45,7 +45,7 @@ const userLogin = async (req, res) => {
     );
     const currentUser = { ...userFound, refreshToken };
     usersDB.setUsers([...otherUsers, currentUser]);
-    await fsPromises.writeFile(dataPath, JSON.stringify(usersDB.users));
+    await fsPromise.writeFile(dataPath, JSON.stringify(usersDB.users));
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true,

@@ -19,7 +19,7 @@ const NavBar = () => {
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={NavLink} to="/login">
+            <Nav.Link as={NavLink} to="/auth">
               Login
             </Nav.Link>
           </Nav.Item>

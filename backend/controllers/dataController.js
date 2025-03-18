@@ -1,12 +1,13 @@
 const fs = require("fs").promises;
 const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 
 const dataPath = path.join(__dirname, "..", "model", "data.json");
 
 const getAllData = async (req, res) => {
   try {
     const data = await fs.readFile(dataPath, "utf-8");
-    const parsedData = JSON.parse(data);
+    const parsedData = JSON.parse(data || "{}");
 
     const sortedArray = Object.entries(parsedData).map(([id, post]) => ({
       id,
@@ -15,7 +16,7 @@ const getAllData = async (req, res) => {
 
     return res.status(200).json(sortedArray);
   } catch (err) {
-    return res.status(500).json({ message: "Error fetching data" });
+    return res.status(500).json({ message: "Error fetching data." });
   }
 };
 
@@ -24,10 +25,10 @@ const getSinglePost = async (req, res) => {
 
   try {
     const data = await fs.readFile(dataPath, "utf-8");
-    const parseData = JSON.parse(data);
+    const parseData = JSON.parse(data || "{}");
 
     if (!parseData[postId]) {
-      return res.status(500).json({ message: "No post found." });
+      return res.status(404).json({ message: "No post found." });
     }
 
     return res.status(200).json(parseData[postId]);
@@ -37,8 +38,13 @@ const getSinglePost = async (req, res) => {
 };
 
 const postData = async (req, res) => {
-  const postId = new Date().toISOString();
+  const postId = uuidv4();
   const newData = req.body;
+
+  // Validacija podataka
+  if (!newData || Object.keys(newData).length === 0) {
+    return res.status(400).json({ message: "Invalid data." });
+  }
 
   try {
     const data = await fs.readFile(dataPath, "utf-8");
@@ -46,11 +52,9 @@ const postData = async (req, res) => {
 
     currentData[postId] = newData;
 
-    const jsonData = JSON.stringify(currentData);
+    await fs.writeFile(dataPath, JSON.stringify(currentData, null, 2));
 
-    await fs.writeFile(dataPath, jsonData);
-
-    return res.status(201).json({ mesage: "New data added." });
+    return res.status(201).json({ message: "New data added.", id: postId });
   } catch (err) {
     return res.status(500).json({ message: "Error posting data." });
   }
@@ -60,20 +64,24 @@ const editData = async (req, res) => {
   const postId = req.params.postId;
   const newData = req.body;
 
+  if (!newData || Object.keys(newData).length === 0) {
+    return res.status(400).json({ message: "Invalid update data." });
+  }
+
   try {
     const data = await fs.readFile(dataPath, "utf-8");
-    const parseData = JSON.parse(data);
+    const parseData = JSON.parse(data || "{}");
 
-    if (parseData[postId]) {
-      parseData[postId] = newData;
-
-      await fs.writeFile(dataPath, JSON.stringify(parseData));
-      return res.status(200).json(parseData[postId]);
-    } else {
+    if (!parseData[postId]) {
       return res.status(404).json({ message: "No post found." });
     }
+
+    parseData[postId] = { ...parseData[postId], ...newData };
+
+    await fs.writeFile(dataPath, JSON.stringify(parseData, null, 2));
+    return res.status(200).json(parseData[postId]);
   } catch (err) {
-    console.error("Error:", err); // Loguj greške
+    console.error("Error:", err);
     res.status(500).json({ message: "No data found by specific ID." });
   }
 };
@@ -83,17 +91,16 @@ const deleteData = async (req, res) => {
 
   try {
     const data = await fs.readFile(dataPath, "utf-8");
-    const parseData = JSON.parse(data);
+    const parseData = JSON.parse(data || "{}");
 
-    if (parseData[postId]) {
-      delete parseData[postId];
-      await fs.writeFile(dataPath, JSON.stringify(parseData));
-      return res.status(201).json({ message: "Item sucesfully deleted." });
-    } else {
-      return res
-        .status(500)
-        .json({ message: "Cant delete item, please try again later" });
+    if (!parseData[postId]) {
+      return res.status(404).json({ message: "No post found." });
     }
+
+    delete parseData[postId];
+    await fs.writeFile(dataPath, JSON.stringify(parseData, null, 2));
+
+    return res.status(200).json({ message: "Item successfully deleted." });
   } catch (err) {
     return res.status(500).json({ message: "Error while deleting file." });
   }
