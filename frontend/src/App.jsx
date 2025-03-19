@@ -4,6 +4,7 @@ import RootLayout from "./components/RootLayout/RootLayout";
 import Home from "./components/Home";
 import Post from "./components/Post";
 import AuthForm from "./components/Login";
+import { authAction } from "./components/Login";
 
 const router = createBrowserRouter([
   {
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/post", element: <Post /> },
-      { path: "/auth", element: <AuthForm /> },
+      { path: "/auth", element: <AuthForm />, action: authAction },
     ],
   },
 ]);

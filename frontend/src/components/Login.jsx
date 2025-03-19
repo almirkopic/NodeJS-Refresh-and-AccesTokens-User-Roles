@@ -5,8 +5,51 @@ import {
   Link,
   useActionData,
   useNavigation,
+  redirect,
 } from "react-router-dom";
 import InputField from "./AuthInputField";
+
+export async function authAction({ request }) {
+  const url = new URL(request.url);
+  const mode = url.searchParams.get("mode");
+  const formData = await request.formData();
+
+  // Validacija potvrde lozinke
+  if (mode === "signup") {
+    const pw = formData.get("pw");
+    const confirmPw = formData.get("confirmPw");
+    if (pw !== confirmPw) {
+      return { errors: { confirmPw: "Passwords do not match" } };
+    }
+  }
+
+  // Priprema podataka za backend
+  const credentials = {
+    user: formData.get("user"),
+    pw: formData.get("pw"),
+  };
+
+  const endpoint = mode === "login" ? "/auth" : "/register";
+  const response = await fetch(`http://localhost:3000${endpoint}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(credentials),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    return { errors: errorData.errors, message: errorData.message };
+  }
+
+  if (mode === "login") {
+    const { accessToken } = await response.json();
+    localStorage.setItem("accessToken", accessToken);
+    return redirect("/");
+  }
+
+  return redirect("/auth?mode=login");
+}
 
 export default function Authentication() {
   const data = useActionData();
@@ -15,12 +58,10 @@ export default function Authentication() {
   const isLogin = searchParams.get("mode") === "login";
   const isSubmitting = navigation.state === "submitting";
 
-  const buttonText = isLogin ? "Log in" : "Sign up";
-
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="card p-4 shadow" style={{ width: "25rem" }}>
-        <Form className="needs-validation" method="post" noValidate>
+        <Form method="post" replace>
           <div className="d-flex justify-content-end">
             <Link to="/" className="btn-close"></Link>
           </div>
@@ -39,65 +80,48 @@ export default function Authentication() {
           )}
 
           <InputField
-            id="email"
+            id="user"
+            name="user"
             type="email"
             label="Email"
-            autoComplete="email"
-            placeholder="username@gmail.com"
+            placeholder="email@example.com"
             className="form-control"
           />
+
           <InputField
-            id="password"
+            id="pw"
+            name="pw"
             type="password"
             label="Password"
-            autoComplete="current-password"
-            placeholder="password"
+            placeholder="••••••••"
             className="form-control"
           />
+
           {!isLogin && (
             <InputField
-              id="confirmPassword"
+              id="confirmPw"
+              name="confirmPw"
               type="password"
               label="Confirm Password"
-              autoComplete="current-password"
-              placeholder="Confirm password"
+              placeholder="••••••••"
               className="form-control"
             />
           )}
 
-          {isSubmitting && (
-            <div className="text-center mt-3">
-              <Loader />
-            </div>
-          )}
-
-          <div className="text-end">
-            <Link to="/forgot-password" className="text-decoration-none">
-              Forgot Password?
-            </Link>
-          </div>
-
-          <div className="d-grid gap-2 mt-3">
+          <div className="d-grid gap-2 mt-4">
             <button
               type="submit"
               className="btn btn-primary"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Submitting..." : buttonText}
+              {isSubmitting ? "Submitting..." : isLogin ? "Login" : "Sign up"}
             </button>
-
-            {/* Centriran tekst sa ispravljenom rečenicom */}
-            <p className="text-center mt-2">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
-            </p>
 
             <Link
               to={`?mode=${isLogin ? "signup" : "login"}`}
-              className="text-center"
+              className="text-center btn btn-link"
             >
-              <button className="btn btn-outline-secondary">
-                {isLogin ? "Sign up" : "Back to log in"}
-              </button>
+              {isLogin ? "Create new account" : "Back to login"}
             </Link>
           </div>
         </Form>

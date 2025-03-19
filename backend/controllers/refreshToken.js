@@ -16,7 +16,8 @@ const controlRefreshToken = (req, res) => {
 
   if (!cookies || !cookies.jwt) return res.sendStatus(401);
 
-  const refreshToken = cookies.jwt;
+  const refreshToken = req.cookies?.jwt;
+  if (!refreshToken) return res.sendStatus(401);
 
   const userFound = usersDB.users.find(
     (client) => client.refreshToken === refreshToken
