@@ -55,6 +55,33 @@ const Home = () => {
     fetchData(token);
   }, [navigate]);
 
+  const deletePost = async (postId) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/auth");
+      return;
+    }
+
+    const response = await fetch(`http://localhost:3000/posts/${postId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (response.status === 403) {
+      const newToken = await refreshToken(navigate);
+      if (newToken) {
+        await fetch(`http://localhost:3000/posts/${postId}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${newToken}` },
+        });
+      }
+    }
+
+    if (response.ok) {
+      setData((prevData) => prevData.filter((post) => post.id !== postId));
+    }
+  };
+
   const handleLogout = async () => {
     await fetch("http://localhost:3000/logout", {
       method: "POST",

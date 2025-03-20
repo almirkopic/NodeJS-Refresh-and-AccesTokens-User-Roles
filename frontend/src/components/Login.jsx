@@ -14,7 +14,6 @@ export async function authAction({ request }) {
   const mode = url.searchParams.get("mode");
   const formData = await request.formData();
 
-  // Validacija potvrde lozinke
   if (mode === "signup") {
     const pw = formData.get("pw");
     const confirmPw = formData.get("confirmPw");
@@ -23,7 +22,6 @@ export async function authAction({ request }) {
     }
   }
 
-  // Priprema podataka za backend
   const credentials = {
     user: formData.get("user"),
     pw: formData.get("pw"),
