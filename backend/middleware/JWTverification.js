@@ -10,7 +10,6 @@ const verificationJWT = (req, res, next) => {
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
     if (err) {
-      //   console.error("JWT Verification Error:", err.message);
       return res.sendStatus(403);
     }
     req.user = decoded.username;

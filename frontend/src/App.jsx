@@ -1,25 +1,49 @@
+// App.js
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayout from "./components/RootLayout/RootLayout";
 import Home from "./components/Home";
 import Post from "./components/Post";
-import AuthForm from "./components/Login";
-import { authAction } from "./components/Login";
+import Authentication, { authAction } from "./components/Login";
+import { SessionProvider } from "./context/SessionContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
     children: [
-      { path: "/", element: <Home /> },
-      { path: "/post", element: <Post /> },
-      { path: "/auth", element: <AuthForm />, action: authAction },
+      {
+        path: "/",
+        element: (
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/post",
+        element: (
+          <ProtectedRoute>
+            <Post />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/auth",
+        element: <Authentication />,
+        action: authAction,
+      },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <SessionProvider>
+      <RouterProvider router={router} />
+    </SessionProvider>
+  );
 }
 
 export default App;

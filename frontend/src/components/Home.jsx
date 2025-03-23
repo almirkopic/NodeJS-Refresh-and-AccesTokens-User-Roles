@@ -1,94 +1,57 @@
+// Home.js
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useSession } from "../context/SessionContext";
 import ProtectedRoute from "./ProtectedRoute";
-
-async function refreshToken(navigate) {
-  try {
-    const response = await fetch("http://localhost:3000/refresh", {
-      method: "GET",
-      credentials: "include",
-    });
-
-    if (!response.ok) throw new Error("Token refresh failed");
-
-    const { accessToken } = await response.json();
-    localStorage.setItem("accessToken", accessToken);
-    return accessToken;
-  } catch (error) {
-    localStorage.removeItem("accessToken");
-    navigate("/auth");
-    return null;
-  }
-}
 
 const Home = () => {
   const [data, setData] = useState([]);
-  const navigate = useNavigate();
+  const { session, checkAuth } = useSession();
 
-  const fetchData = async (token) => {
-    let response = await fetch("http://localhost:3000/posts", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/posts", {
+        headers: { Authorization: `Bearer ${session.token}` },
+      });
 
-    if (response.status === 403) {
-      const newToken = await refreshToken(navigate);
-      if (newToken) {
-        response = await fetch("http://localhost:3000/posts", {
-          headers: { Authorization: `Bearer ${newToken}` },
-        });
+      if (response.status === 403) {
+        await checkAuth();
+        fetchData();
+        return;
       }
-    }
 
-    if (response.ok) {
-      const posts = await response.json();
-      setData(posts);
+      if (response.ok) {
+        const posts = await response.json();
+        setData(posts);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
     }
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      navigate("/auth");
-      return;
-    }
-    fetchData(token);
-  }, [navigate]);
+    if (session?.token) fetchData();
+  }, [session]);
 
   const deletePost = async (postId) => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      navigate("/auth");
-      return;
-    }
+    try {
+      const response = await fetch(`http://localhost:3000/posts/${postId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${session.token}` },
+      });
 
-    const response = await fetch(`http://localhost:3000/posts/${postId}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (response.status === 403) {
-      const newToken = await refreshToken(navigate);
-      if (newToken) {
-        await fetch(`http://localhost:3000/posts/${postId}`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${newToken}` },
-        });
+      if (response.status === 403) {
+        await checkAuth();
+        deletePost(postId);
+        return;
       }
-    }
 
-    if (response.ok) {
-      setData((prevData) => prevData.filter((post) => post.id !== postId));
+      if (response.ok) {
+        setData((prev) => prev.filter((post) => post.id !== postId));
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
     }
-  };
-
-  const handleLogout = async () => {
-    await fetch("http://localhost:3000/logout", {
-      method: "POST",
-      credentials: "include",
-    });
-    localStorage.removeItem("accessToken");
-    navigate("/auth");
   };
 
   return (
@@ -96,9 +59,6 @@ const Home = () => {
       <Container className="mt-4">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h1>Home Page</h1>
-          <button onClick={handleLogout} className="btn btn-danger">
-            Logout
-          </button>
         </div>
         <div className="post">
           {data.map((post) => (

@@ -1,13 +1,27 @@
+// ProtectedRoute.js
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { useSession } from "../context/SessionContext";
 
-export default function ProtectedRoute({ children }) {
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, checkAuth } = useSession();
   const location = useLocation();
-  const token = localStorage.getItem("accessToken");
+  const [isVerified, setIsVerified] = React.useState(null);
 
-  if (!token) {
-    return <Navigate to="/auth" state={{ from: location }} replace />;
-  }
+  React.useEffect(() => {
+    const verifyAuth = async () => {
+      const isValid = await checkAuth();
+      setIsVerified(isValid);
+    };
+    verifyAuth();
+  }, [checkAuth]);
 
-  return children;
-}
+  if (isVerified === null) return null;
+  return isVerified ? (
+    children
+  ) : (
+    <Navigate to="/auth" state={{ from: location }} replace />
+  );
+};
+
+export default ProtectedRoute;
