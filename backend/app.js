@@ -16,6 +16,15 @@ const PORT = process.env.URI || 3000;
 app.use(bodyParser.json());
 app.use(express.json());
 
+app.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -33,7 +42,7 @@ app.use("/auth", authUser);
 app.use("/refresh", refreshToken);
 app.use("/logout", logoutUser);
 
-app.use(verificationJWT);
+// app.use(verificationJWT);
 app.use(dataRoutes);
 
 app.listen(PORT, () => {

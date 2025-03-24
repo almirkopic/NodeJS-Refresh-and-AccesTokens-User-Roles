@@ -4,9 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayout from "./components/RootLayout/RootLayout";
 import Home from "./components/Home";
 import Post from "./components/Post";
-import Authentication, { authAction } from "./components/Login";
-import { SessionProvider } from "./context/SessionContext";
-import ProtectedRoute from "./components/ProtectedRoute";
+import AuthForm from "./components/AuthForm";
 
 const router = createBrowserRouter([
   {
@@ -15,35 +13,22 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: (
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        ),
+        element: <Home />,
       },
       {
         path: "/post",
-        element: (
-          <ProtectedRoute>
-            <Post />
-          </ProtectedRoute>
-        ),
+        element: <Post />,
       },
       {
         path: "/auth",
-        element: <Authentication />,
-        action: authAction,
+        element: <AuthForm />,
       },
     ],
   },
 ]);
 
 function App() {
-  return (
-    <SessionProvider>
-      <RouterProvider router={router} />
-    </SessionProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

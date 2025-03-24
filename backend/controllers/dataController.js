@@ -41,7 +41,6 @@ const postData = async (req, res) => {
   const postId = uuidv4();
   const newData = req.body;
 
-  // Validacija podataka
   if (!newData || Object.keys(newData).length === 0) {
     return res.status(400).json({ message: "Invalid data." });
   }
