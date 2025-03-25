@@ -1,6 +1,35 @@
 import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
+  const [posts, setPosts] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { accessToken } = useAuth();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/posts", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setPosts(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, [accessToken]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <div className="home-container">
       <div className="table">
@@ -11,24 +40,15 @@ const Home = () => {
           <li>Phone</li>
         </ul>
 
-        <div className="row">
-          <li>Jane</li>
-          <li>Smith</li>
-          <li>jane@example.com</li>
-          <li>+987654321</li>
-        </div>
-        <div className="row">
-          <li>Jane</li>
-          <li>Smith</li>
-          <li>jane@example.com</li>
-          <li>+987654321</li>
-        </div>
-        <div className="row">
-          <li>John</li>
-          <li>Doe</li>
-          <li>john@example.com</li>
-          <li>+123456789</li>
-        </div>
+        {posts.map((post) => (
+          <div className="row" key={post.id}>
+            <li>{post.firstname}</li>
+            <li>{post.lastname}</li>
+            <li>{post.email}</li>
+            <li>{post.phone}</li>
+          </div>
+        ))}
+        {posts.length === 0 && <div className="no-data">No posts found</div>}
       </div>
     </div>
   );

@@ -216,3 +216,15 @@ button:hover {
   text-decoration: underline;
   background-color: white;
 }
+
+.logout {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: wheat;
+}
+
+.logout:hover {
+  background-color: transparent;
+}
