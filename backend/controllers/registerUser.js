@@ -24,7 +24,11 @@ const addNewUser = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(pw, 12);
-    const newUser = { username: user, password: hashedPassword };
+    const newUser = {
+      username: user,
+      roles: { User: 2001 }, //role 1.
+      password: hashedPassword,
+    };
 
     usersDB.setUsers([...usersDB.users, newUser]);
 

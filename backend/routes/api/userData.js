@@ -1,6 +1,14 @@
+const ROLES_LIST = {
+  Admin: 5150,
+  Editor: 1984,
+  User: 2001,
+};
+
 const express = require("express");
 
 const dataController = require("../../controllers/dataController");
+
+const rolesVerification = require("../../middleware/rolesVerification");
 
 const router = express.Router();
 
@@ -8,10 +16,22 @@ router.get("/posts", dataController.getAllData);
 
 router.get("/posts/:postId", dataController.getSinglePost);
 
-router.post("/posts", dataController.postData);
+router.post(
+  "/posts",
+  rolesVerification(ROLES_LIST.Admin, ROLES_LIST.Editor),
+  dataController.postData
+);
 
-router.put("/posts/:postId", dataController.editData);
+router.put(
+  "/posts/:postId",
+  rolesVerification(ROLES_LIST.Admin, ROLES_LIST.Editor),
+  dataController.editData
+);
 
-router.delete("/posts/:postId", dataController.deleteData);
+router.delete(
+  "/posts/:postId",
+  rolesVerification(ROLES_LIST.Admin),
+  dataController.deleteData
+);
 
 module.exports = router;
