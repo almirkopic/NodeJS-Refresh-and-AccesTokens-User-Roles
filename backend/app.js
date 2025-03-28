@@ -42,7 +42,7 @@ app.use("/auth", authUser);
 app.use("/refresh", refreshToken);
 app.use("/logout", logoutUser);
 
-// app.use(verificationJWT);
+app.use(verificationJWT);
 app.use(dataRoutes);
 
 app.listen(PORT, () => {
