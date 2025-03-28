@@ -9,7 +9,6 @@ const Dashboard = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [userList, setUserList] = useState(users);
-  const [selectedRole, setSelectedRole] = useState("User");
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -27,18 +26,30 @@ const Dashboard = () => {
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleSave = () => {
+    console.log("Saving data to backend:", userList);
+  };
+
   return (
     <div className="dashboard">
       <h1>Admin Dashboard</h1>
 
-      <div className="search-bar">
-        <input
-          type="search"
-          placeholder="Search by email..."
-          value={searchTerm}
-          onChange={handleSearch}
-          className="search-input"
-        />
+      <div className="search-and-save">
+        <div className="search-bar">
+          <input
+            type="search"
+            placeholder="Search by email..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="search-input"
+          />
+        </div>
+
+        <div className="save-btn-container">
+          <button onClick={handleSave} className="save-btn">
+            Save Changes
+          </button>
+        </div>
       </div>
 
       <ul className="user-list">

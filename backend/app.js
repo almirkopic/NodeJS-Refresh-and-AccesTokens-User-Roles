@@ -10,6 +10,7 @@ const authUser = require("./routes/userLogin");
 const verificationJWT = require("./middleware/JWTverification");
 const refreshToken = require("./routes/refreshToken");
 const logoutUser = require("./routes/userLogout");
+const roleManagement = require("./routes/roleManagement");
 
 const PORT = process.env.URI || 3000;
 
@@ -44,6 +45,7 @@ app.use("/logout", logoutUser);
 
 app.use(verificationJWT);
 app.use(dataRoutes);
+app.use("/users", roleManagement);
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
