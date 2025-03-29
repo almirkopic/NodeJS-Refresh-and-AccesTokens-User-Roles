@@ -3,6 +3,8 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+const API_URI = import.meta.env.VITE_API_URL;
+
 const Post = () => {
   const [formData, setFormData] = useState({
     firstname: "",
@@ -25,16 +27,12 @@ const Post = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/posts",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_URI}/posts`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       console.log("Data posted succesfully:", response.data);
       navigate("/");
     } catch (error) {

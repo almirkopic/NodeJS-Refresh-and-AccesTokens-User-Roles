@@ -5,14 +5,17 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
+  const [userRole, setUserRole] = useState(null);
 
   const refreshAccessToken = async () => {
     try {
       const response = await axios.get("/refresh", { withCredentials: true });
       setAccessToken(response.data.accessToken);
+      setUserRole(response.data.roles);
       return response.data.accessToken;
     } catch (error) {
       setAccessToken(null);
+      setUserRole(null);
       return null;
     }
   };
@@ -49,7 +52,9 @@ export const AuthProvider = ({ children }) => {
   );
 
   return (
-    <AuthContext.Provider value={{ accessToken, setAccessToken, api }}>
+    <AuthContext.Provider
+      value={{ accessToken, setAccessToken, api, userRole, setUserRole }}
+    >
       {children}
     </AuthContext.Provider>
   );

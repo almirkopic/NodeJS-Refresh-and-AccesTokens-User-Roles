@@ -3,10 +3,12 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 
+const API_URI = import.meta.env.VITE_API_URL;
+
 const AuthForm = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, setUserRole } = useAuth();
   const isLogin = searchParams.get("mode") !== "signup";
   const [error, setError] = React.useState("");
 
@@ -15,30 +17,28 @@ const AuthForm = () => {
     setError("");
 
     const formData = new FormData(e.target);
-    const user = formData.get("email");
-    const pw = formData.get("password");
-    const confirmPw = formData.get("confirmPassword");
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirmPassword");
 
-    if (!isLogin && pw !== confirmPw) {
+    if (!isLogin && password !== confirmPassword) {
       return setError("Passwords do not match");
     }
 
     try {
-      const backendUrl = "http://localhost:3000";
-      const url = isLogin ? `${backendUrl}/auth` : `${backendUrl}/register`;
+      const url = isLogin ? `${API_URI}/auth` : `${API_URI}/register`;
       const response = await axios.post(
         url,
-        { user, pw },
+        { user: email, pw: password },
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
       if (isLogin) {
         setAccessToken(response.data.accessToken);
+        setUserRole(response.data.roles);
         navigate("/");
       } else {
         navigate("/auth?mode=login");

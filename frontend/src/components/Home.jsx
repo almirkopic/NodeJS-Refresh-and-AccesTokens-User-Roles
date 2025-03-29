@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
+const API_URI = import.meta.env.VITE_API_URL;
+
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
@@ -12,7 +14,7 @@ const Home = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/posts", {
+        const response = await axios.get(`${API_URI}/posts`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

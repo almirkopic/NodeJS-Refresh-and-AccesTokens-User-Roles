@@ -38,7 +38,7 @@ const controlRefreshToken = (req, res) => {
         expiresIn: "7min",
       }
     );
-    res.json({ accessToken });
+    res.json({ accessToken, roles });
   });
 };
 

@@ -62,7 +62,7 @@ const userLogin = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    return res.json({ accessToken });
+    return res.json({ accessToken, roles });
   } else {
     return res.status(401).json({ message: "Error authorizing user." });
   }
