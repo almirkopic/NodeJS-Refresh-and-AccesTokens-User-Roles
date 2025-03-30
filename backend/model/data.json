@@ -1,56 +1,14 @@
 {
-  "5d9e23a8-3af2-43a7-b0bf-21b6d101f02c": {
-    "firstname": "teasdas",
-    "lastname": "dasdas",
-    "phone": "das",
-    "email": "dasd"
+  "d162f5e9-5b43-44d4-a981-983e20728dca": {
+    "firstname": "Almir",
+    "lastname": "Kopic",
+    "email": "test@test.com",
+    "phone": "065-423-844"
   },
-  "8d6fe2a7-8261-455c-ba92-cd5072794dad": {
-    "firstname": "asd",
-    "lastname": "asd",
-    "phone": "asd",
-    "email": "asd"
-  },
-  "d0eb41d4-6f53-45c2-b6d5-eaa0430229c2": {
-    "firstname": "asda",
-    "lastname": "asd",
-    "email": "aaddsd@asdasd",
-    "phone": "asdasd"
-  },
-  "6f77bec3-9189-46f1-81a8-a753360dfe4d": {
-    "firstname": "asda",
-    "lastname": "asd",
-    "email": "aaddsd@asdasd",
-    "phone": "asdasd"
-  },
-  "d70fd2b5-0330-4896-88e4-45dad7eb99df": {
-    "firstname": "sdasdasd",
-    "lastname": "ad@",
-    "email": "sdsaas@asda",
-    "phone": "das"
-  },
-  "2f24116e-186e-4fff-bd6f-affe929a19e8": {
-    "firstname": "123",
-    "lastname": "12312312",
-    "email": "3123@12312",
-    "phone": "3123123"
-  },
-  "fb1c9e49-46e7-45aa-a595-36d1f54cadb4": {
-    "firstname": "asd",
-    "lastname": "asd",
-    "email": "asd@asda",
-    "phone": "sd"
-  },
-  "2bcaf069-a0b3-4272-924e-af164f6f0b59": {
-    "firstname": "sd",
-    "lastname": "asd",
-    "email": "asd@asd",
-    "phone": "asdasd"
-  },
-  "5e386253-1d27-4e94-bc3e-88730aec940c": {
-    "firstname": "asd",
-    "lastname": "asda",
-    "email": "sd@asd",
-    "phone": "asdasd"
+  "74dee0e3-8980-4319-baaf-45696dae9019": {
+    "firstname": "ALmir",
+    "lastname": "Kop KOp",
+    "email": "kop@kop.com",
+    "phone": "065/423-844"
   }
 }
