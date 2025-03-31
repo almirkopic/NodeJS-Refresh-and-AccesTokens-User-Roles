@@ -13,31 +13,32 @@ const ACCESS_TOKEN = process.env.ACCESS_TOKEN_SECRET;
 
 const controlRefreshToken = (req, res) => {
   const cookies = req.cookies;
+  if (!cookies?.jwt) {
+    return res.sendStatus(401);
+  }
 
-  if (!cookies || !cookies.jwt) return res.sendStatus(401);
-
-  const refreshToken = req.cookies?.jwt;
-  if (!refreshToken) return res.sendStatus(401);
+  const refreshToken = cookies.jwt;
 
   const userFound = usersDB.users.find(
     (client) => client.refreshToken === refreshToken
   );
 
-  if (!userFound) return res.sendStatus(403);
+  if (!userFound) {
+    return res.sendStatus(403);
+  }
 
   jwt.verify(refreshToken, REFRESH_TOKEN, (err, decoded) => {
     if (err || userFound.username !== decoded.username) {
       return res.sendStatus(403);
     }
-    const roles = Object.values(userFound.roles);
 
+    const roles = Object.values(userFound.roles);
     const accessToken = jwt.sign(
       { UserInfo: { username: decoded.username, roles: roles } },
       ACCESS_TOKEN,
-      {
-        expiresIn: "7min",
-      }
+      { expiresIn: "7min" }
     );
+
     res.json({ accessToken, roles });
   });
 };

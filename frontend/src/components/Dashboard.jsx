@@ -12,7 +12,6 @@ const Dashboard = () => {
   const { api, userRole } = useAuth();
 
   useEffect(() => {
-    console.log("Current userRole in Dashboard:", userRole);
     fetchUsers();
   }, []);
 
@@ -22,7 +21,6 @@ const Dashboard = () => {
       setUsers(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching users:", err);
       setError("Failed to fetch users");
       setLoading(false);
     }
@@ -45,7 +43,6 @@ const Dashboard = () => {
       setRoleChanges({});
       fetchUsers();
     } catch (err) {
-      console.error("Error updating roles:", err);
       setError("Failed to update user roles");
     }
   };

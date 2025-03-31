@@ -12,9 +12,17 @@ const rolesVerification = require("../../middleware/rolesVerification");
 
 const router = express.Router();
 
-router.get("/posts", dataController.getAllData);
+router.get(
+  "/posts",
+  rolesVerification(ROLES_LIST.User, ROLES_LIST.Admin, ROLES_LIST.Editor),
+  dataController.getAllData
+);
 
-router.get("/posts/:postId", dataController.getSinglePost);
+router.get(
+  "/posts/:postId",
+  rolesVerification(ROLES_LIST.User, ROLES_LIST.Admin, ROLES_LIST.Editor),
+  dataController.getSinglePost
+);
 
 router.post(
   "/posts",

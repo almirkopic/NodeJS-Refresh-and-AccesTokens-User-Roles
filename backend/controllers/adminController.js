@@ -10,7 +10,7 @@ const dataPath = path.join(__dirname, "..", "model", "users.json");
 
 const ROLES_LIST = {
   User: 2001,
-  Editor: 1084,
+  Editor: 1984,
   Admin: 5150,
 };
 

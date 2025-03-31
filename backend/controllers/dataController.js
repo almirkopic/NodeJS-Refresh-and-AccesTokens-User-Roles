@@ -80,7 +80,6 @@ const editData = async (req, res) => {
     await fs.writeFile(dataPath, JSON.stringify(parseData, null, 2));
     return res.status(200).json(parseData[postId]);
   } catch (err) {
-    console.error("Error:", err);
     res.status(500).json({ message: "No data found by specific ID." });
   }
 };

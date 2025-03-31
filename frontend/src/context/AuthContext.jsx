@@ -3,13 +3,22 @@ import axios from "axios";
 
 const AuthContext = createContext();
 
+const API_URI = import.meta.env.VITE_API_URL;
+
 export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [userRole, setUserRole] = useState(null);
 
   const refreshAccessToken = async () => {
     try {
-      const response = await axios.get("/refresh", { withCredentials: true });
+      const response = await axios.get(`${API_URI}/refresh`, {
+        withCredentials: true,
+      });
+
+      if (!response.data.accessToken) {
+        return null;
+      }
+
       setAccessToken(response.data.accessToken);
       setUserRole(response.data.roles);
       return response.data.accessToken;
@@ -22,6 +31,12 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     refreshAccessToken();
+
+    const interval = setInterval(() => {
+      refreshAccessToken();
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const api = axios.create({
@@ -43,8 +58,9 @@ export const AuthProvider = ({ children }) => {
         originalRequest._retry = true;
         const newToken = await refreshAccessToken();
         if (newToken) {
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          return axios(originalRequest);
+          api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+          originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+          return api(originalRequest);
         }
       }
       return Promise.reject(error);
