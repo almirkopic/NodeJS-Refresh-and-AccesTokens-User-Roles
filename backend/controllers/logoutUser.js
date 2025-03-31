@@ -37,7 +37,7 @@ const controlLogout = async (req, res) => {
   }
 
   res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
-  res.sendStatus(204);
+  res.status(204).json({ message: "Logged out" });
 };
 
 module.exports = { controlLogout };

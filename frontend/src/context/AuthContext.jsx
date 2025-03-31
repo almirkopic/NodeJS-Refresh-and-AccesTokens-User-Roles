@@ -16,6 +16,8 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (!response.data.accessToken) {
+        setAccessToken(null);
+        setUserRole(null);
         return null;
       }
 

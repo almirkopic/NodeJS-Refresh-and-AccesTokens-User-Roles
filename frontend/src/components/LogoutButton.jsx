@@ -10,7 +10,9 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("/logout", { withCredentials: true });
+      await axios.get(`${import.meta.env.VITE_API_URL}/logout`, {
+        withCredentials: true,
+      });
       setAccessToken(null);
       navigate("/auth?mode=login");
     } catch (error) {
