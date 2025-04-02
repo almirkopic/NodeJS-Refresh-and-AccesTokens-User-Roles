@@ -13,6 +13,8 @@ const Post = () => {
     phone: "",
   });
 
+  const [message, setMessage] = useState("");
+
   const { accessToken } = useAuth();
   const navigate = useNavigate();
 
@@ -33,15 +35,18 @@ const Post = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("Data posted succesfully:", response.data);
+      setMessage("Data posted sucesfully.");
       navigate("/");
     } catch (error) {
-      console.error("Error while sending data:", error);
+      setMessage("Error posting data, please try again later.");
+      setFormData({ firstname: "", lastname: "", email: "", phone: "" });
     }
   };
 
   return (
     <div className="form-container">
+      {message && <p className="post-error">{message}</p>}
+
       <form onSubmit={handleSubmit} className="form">
         <p>
           First Name:

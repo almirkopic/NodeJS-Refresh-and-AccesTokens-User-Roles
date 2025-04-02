@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { FaTrash } from "react-icons/fa";
+import { DataGrid } from "@mui/x-data-grid";
+import Paper from "@mui/material/Paper";
 
 const API_URI = import.meta.env.VITE_API_URL;
 
@@ -10,6 +12,7 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const { accessToken } = useAuth();
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -38,41 +41,50 @@ const Home = () => {
       });
       setPosts(posts.filter((post) => post.id !== postId));
     } catch (err) {
-      setError(err.message);
+      setMessage("Error while deleting file.");
     }
   };
+
+  const columns = [
+    { field: "firstname", headerName: "First Name", flex: 1, minWidth: 150 },
+    { field: "lastname", headerName: "Last Name", flex: 1, minWidth: 150 },
+    { field: "email", headerName: "Email", flex: 1, minWidth: 200 },
+    { field: "phone", headerName: "Phone", flex: 1, minWidth: 150 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 100,
+      renderCell: (params) => (
+        <FaTrash
+          className="delete-icon"
+          onClick={() => handleDelete(params.row.id)}
+          style={{ cursor: "pointer", color: "red" }}
+        />
+      ),
+    },
+  ];
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="home-container">
-      <div className="table">
-        <ul>
-          <li>First Name</li>
-          <li>Last Name</li>
-          <li>Email</li>
-          <li>Phone</li>
-          <li>Actions</li>
-        </ul>
-
-        {posts.map((post) => (
-          <div className="row" key={post.id}>
-            <li>{post.firstname}</li>
-            <li>{post.lastname}</li>
-            <li>{post.email}</li>
-            <li>{post.phone}</li>
-            <li className="delete">
-              <FaTrash
-                className="delete-icon"
-                onClick={() => handleDelete(post.id)}
-                style={{ cursor: "pointer", color: "red" }}
-              />
-            </li>
-          </div>
-        ))}
-        {posts.length === 0 && <div className="no-data">No posts found</div>}
-      </div>
+      {message && <p className="post-error">{message}</p>}
+      <Paper className="custom-paper">
+        <DataGrid
+          rows={posts}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          getRowId={(row) => row.id}
+          className="custom-data-grid"
+          disableRowSelectionOnClick
+        />
+      </Paper>
     </div>
   );
 };

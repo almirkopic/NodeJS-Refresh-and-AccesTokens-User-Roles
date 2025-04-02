@@ -4,7 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import LogoutButton from "./LogoutButton";
 
 const NavBar = () => {
-  const { accessToken } = useAuth();
+  const { accessToken, userRole } = useAuth();
+
   return (
     <nav className="navbar">
       <ul className="navbar-ul">
@@ -14,9 +15,11 @@ const NavBar = () => {
         <li>
           <Link to="/post">Post</Link>
         </li>
-        <li>
-          <Link to="/dashboard">Dashboard</Link>
-        </li>
+        {!(userRole.includes(2001) || userRole.includes(1984)) && (
+          <li>
+            <Link to="/dashboard">Dashboard</Link>
+          </li>
+        )}
       </ul>
       <ul className="navbar-ul">
         <li>

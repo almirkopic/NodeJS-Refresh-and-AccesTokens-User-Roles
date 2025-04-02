@@ -21,7 +21,7 @@ const Dashboard = () => {
       setUsers(response.data);
       setLoading(false);
     } catch (err) {
-      setError("Failed to fetch users");
+      setError("Failed to fetch users.");
       setLoading(false);
     }
   };
@@ -52,12 +52,12 @@ const Dashboard = () => {
   );
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div className="error-message">{error}</div>;
+  if (error) return <div className="post-error">{error}</div>;
   if (!userRole.includes(5150)) return <div>Access denied.</div>;
 
   return (
     <div className="dashboard">
-      <h1>Admin Dashboard</h1>
+      <h1 className="admin-title">Admin Dashboard</h1>
       <div className="search-and-save">
         <div className="search-bar">
           <input
