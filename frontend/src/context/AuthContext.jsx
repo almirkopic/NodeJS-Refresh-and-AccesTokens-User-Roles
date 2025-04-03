@@ -6,8 +6,19 @@ const AuthContext = createContext();
 const API_URI = import.meta.env.VITE_API_URL;
 
 export const AuthProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(null);
   const [userRole, setUserRole] = useState(null);
+
+  const getAccessToken = () => {
+    return sessionStorage.getItem("accessToken");
+  };
+
+  const setAccessToken = (token) => {
+    if (token) {
+      sessionStorage.setItem("accessToken", token);
+    } else {
+      sessionStorage.removeItem("accessToken");
+    }
+  };
 
   const refreshAccessToken = async () => {
     try {
@@ -46,8 +57,9 @@ export const AuthProvider = ({ children }) => {
   });
 
   api.interceptors.request.use((config) => {
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    const token = getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   });
@@ -71,7 +83,13 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ accessToken, setAccessToken, api, userRole, setUserRole }}
+      value={{
+        accessToken: getAccessToken(),
+        setAccessToken,
+        api,
+        userRole,
+        setUserRole,
+      }}
     >
       {children}
     </AuthContext.Provider>
