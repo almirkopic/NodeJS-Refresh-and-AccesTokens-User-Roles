@@ -1,1 +1,68 @@
-{}
+{
+  "acadc8d2-d265-43e1-9728-db8886982265": {
+    "firstname": "Almir",
+    "lastname": "Kopic",
+    "email": "almirkopic1992@gmail.com",
+    "phone": "+387 65 423-844"
+  },
+  "b1f2d3c4-e567-8901-a234-b56789cdef01": {
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "johndoe@example.com",
+    "phone": "+1 202-555-0173"
+  },
+  "c3d4e5f6-7890-1234-b567-89abcdef2345": {
+    "firstname": "Emily",
+    "lastname": "Smith",
+    "email": "emilysmith@example.com",
+    "phone": "+44 7700 900123"
+  },
+  "d4e5f6g7-8901-2345-c678-90abcdef3456": {
+    "firstname": "Michael",
+    "lastname": "Johnson",
+    "email": "michaelj@example.com",
+    "phone": "+49 1520 1234567"
+  },
+  "e5f6g7h8-9012-3456-d789-01abcdef4567": {
+    "firstname": "Sarah",
+    "lastname": "Williams",
+    "email": "sarahw@example.com",
+    "phone": "+33 6 12 34 56 78"
+  },
+  "f6g7h8i9-0123-4567-e890-12abcdef5678": {
+    "firstname": "David",
+    "lastname": "Brown",
+    "email": "davidbrown@example.com",
+    "phone": "+39 320 123 4567"
+  },
+  "g7h8i9j0-1234-5678-f901-23abcdef6789": {
+    "firstname": "Jessica",
+    "lastname": "Taylor",
+    "email": "jessicat@example.com",
+    "phone": "+34 612 345 678"
+  },
+  "h8i9j0k1-2345-6789-g012-34abcdef7890": {
+    "firstname": "Robert",
+    "lastname": "Anderson",
+    "email": "roberta@example.com",
+    "phone": "+61 412 345 678"
+  },
+  "i9j0k1l2-3456-7890-h123-45abcdef8901": {
+    "firstname": "Laura",
+    "lastname": "Martinez",
+    "email": "lauram@example.com",
+    "phone": "+55 21 98765-4321"
+  },
+  "j0k1l2m3-4567-8901-i234-56abcdef9012": {
+    "firstname": "William",
+    "lastname": "Garcia",
+    "email": "williamg@example.com",
+    "phone": "+7 916 123-45-67"
+  },
+  "k1l2m3n4-5678-9012-j345-67abcdef0123": {
+    "firstname": "Sophia",
+    "lastname": "Hernandez",
+    "email": "sophiah@example.com",
+    "phone": "+81 90-1234-5678"
+  }
+}
